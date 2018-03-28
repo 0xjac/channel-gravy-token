@@ -30,14 +30,15 @@ contract BaseGravyToken is BaseERC777Token {
     /// @param _name Name of the new token
     /// @param _symbol Symbol of the new token.
     /// @param _granularity Minimum transferable chunk.
+    /// @param _channel Address of the payment channel contract associated with this gravy token
+    /// @param _mintRate Amount of tokens to mint from the channel messages data
     function BaseGravyToken(
         string _name,
         string _symbol,
         uint256 _granularity,
         address _channel,
         uint256 _mintRate
-    ) public BaseERC777Token(_name, _symbol, _granularity)
-    {
+    ) public BaseERC777Token(_name, _symbol, _granularity) {
         channel = _channel;
         mintRate = _mintRate;
     }
