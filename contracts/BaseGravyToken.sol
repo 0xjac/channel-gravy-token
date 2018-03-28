@@ -38,7 +38,7 @@ contract BaseGravyToken is BaseERC777Token {
         uint256 _granularity,
         address _channel,
         uint256 _mintRate
-    ) public BaseERC777Token(_name, _symbol, _granularity) {
+    ) internal BaseERC777Token(_name, _symbol, _granularity) {
         channel = _channel;
         mintRate = _mintRate;
     }

@@ -46,7 +46,7 @@ contract BaseERC777Token is Owned, ERC777Token, ERC820Implementer {
         string _symbol,
         uint256 _granularity
     )
-        public
+        internal
     {
         mName = _name;
         mSymbol = _symbol;
