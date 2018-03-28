@@ -15,7 +15,7 @@
 */
 pragma solidity 0.4.19;
 
-import "./BaseERC777Token.sol";
+import "./lib/BaseERC777Token.sol";
 
 
 contract BaseGravyToken is BaseERC777Token {
