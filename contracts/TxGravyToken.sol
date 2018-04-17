@@ -22,7 +22,6 @@ import "./lib/CastUtils.sol";
 contract TxGravyToken is BaseGravyToken {
     using CastUtils for *;
 
-    string private noexpire = "";
     mapping(address => uint256) private mLastIndex;
 
     function TxGravyToken(
@@ -36,10 +35,19 @@ contract TxGravyToken is BaseGravyToken {
     }
 
     function mint(
-        address _client, bytes32 _h, uint8 _v, bytes32 _r, bytes32 _s, string _value, uint256 _index, bytes _data
+        address _client,
+        bytes32 _h,
+        uint8 _v,
+        bytes32 _r,
+        bytes32 _s,
+        address _token,
+        uint256 _providerAmount,
+        uint256 _clientAmount,
+        uint256 _index,
+        bytes _data
     ) public {
         requireSignature(_client, _h, _v, _r, _s);
-        requireMessage(_h, _client, _value, _index, noexpire);
+        requirePermanentMessage(_h, _token, _client, _providerAmount, _clientAmount, _index);
 
         uint256 amount = mintRate.mul(_index.sub(mLastIndex[_client]));
         mTotalSupply = mTotalSupply.add(amount);
@@ -49,22 +57,26 @@ contract TxGravyToken is BaseGravyToken {
         Minted(msg.sender, _client, amount, _data);
     }
 
-    function requireMessage(
-        bytes32 _h, address _client, string _value, uint256 _index, string _expiry
+    function requirePermanentMessage(
+        bytes32 _h,
+        address _token,
+        address _client,
+        uint256 _providerAmount,
+        uint256 _clientAmount,
+        uint256 _index
     ) internal view {
         bytes32 proof = keccak256(
-            "0x",
-            _client.toAsciiString(),
-            "0x",
-            address(channel).toAsciiString(),
-            _value,
-            _index,
-            _expiry
+            channel,
+            _token,
+            _client,
+            _providerAmount,
+            _clientAmount,
+            _index
         );
         require(proof == _h);
     }
 
-    function requireSignature( address _address, bytes32 _h, uint8 _v, bytes32 _r, bytes32 _s) internal pure {
+    function requireSignature(address _address, bytes32 _h, uint8 _v, bytes32 _r, bytes32 _s) internal pure {
         bytes memory prefix = "\x19Ethereum Signed Message:\n32";
         bytes32 prefixedHash = keccak256(prefix, _h);
         address signer = ecrecover(prefixedHash, _v, _r, _s);
